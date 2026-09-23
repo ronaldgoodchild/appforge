@@ -5,7 +5,7 @@ Comment on (or open) an issue first so we don't duplicate work.
 ## Good first issues
 - [x] Add screenshots to the README
 - [ ] Split the 1,600-line `appforge.py` into modules (theme, winget, choco, setup)
-- [ ] Add keyboard shortcuts (Ctrl+F to search, F5 to refresh)
+- [x] Add keyboard shortcuts (Ctrl+F to search, F5 to refresh) - thanks @fatihcvs
 - [ ] Add a light theme
 
 ## Features
