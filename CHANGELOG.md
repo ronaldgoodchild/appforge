@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+- Add Ctrl+F search focus and F5 refresh for the active Winget or Chocolatey tab.
+
 ## [1.0.0] - 2026-05-05
 - Winget **and** Chocolatey front-ends, Setup and About tabs, theme engine, progress dialog
 - Renamed to **AppForge**; released under MIT

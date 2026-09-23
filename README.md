@@ -18,6 +18,7 @@ A free, dark-mode Windows GUI for **winget** and **Chocolatey**. Browse, install
 - **Sources** - view and manage package sources
 - **Setup tab** - checks whether winget / Chocolatey are installed and helps install them
 - **Theme engine** and a progress dialog for long-running installs
+- **Keyboard shortcuts** - Ctrl+F focuses and selects the search text in Browse or Installed; F5 refreshes the active Browse, Installed, Updates or Sources tab. Shortcuts apply to the selected package manager; Settings, Setup and About are unchanged.
 - Pure Python + Tkinter - **standard library only**
 
 ## Requirements
