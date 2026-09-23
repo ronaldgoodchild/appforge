@@ -3,7 +3,7 @@
 Comment on (or open) an issue first so we don't duplicate work.
 
 ## Good first issues
-- [ ] Add screenshots to the README
+- [x] Add screenshots to the README
 - [ ] Split the 1,600-line `appforge.py` into modules (theme, winget, choco, setup)
 - [ ] Add keyboard shortcuts (Ctrl+F to search, F5 to refresh)
 - [ ] Add a light theme

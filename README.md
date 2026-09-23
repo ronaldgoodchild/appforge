@@ -4,6 +4,11 @@ A free, dark-mode Windows GUI for **winget** and **Chocolatey**. Browse, install
 
 > Built by a working IT technician to set up new PCs fast. Free to use, free to change.
 
+## Screenshots
+
+![Winget tab: browse, search and install from one window](docs/screenshots/main.png)
+*Winget tab: browse, search and install from one window*
+
 ## Features
 
 - **Two package managers, one app** - switch between **Winget** and **Chocolatey** tabs
