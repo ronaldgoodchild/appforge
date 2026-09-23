@@ -534,7 +534,8 @@ class WingetApp:
         ttk.Label(bar, text="Search:").pack(side=tk.LEFT)
         self.browse_search = tk.StringVar()
         self.browse_search.trace_add("write", lambda *_: self._filter_browse())
-        ttk.Entry(bar, textvariable=self.browse_search, width=40).pack(side=tk.LEFT, padx=(4, 12))
+        self.browse_search_entry = ttk.Entry(bar, textvariable=self.browse_search, width=40)
+        self.browse_search_entry.pack(side=tk.LEFT, padx=(4, 12))
         self.browse_refresh_btn = ttk.Button(bar, text="↻ Refresh", command=self._load_browse)
         self.browse_refresh_btn.pack(side=tk.LEFT, padx=4)
         self.browse_install_btn = ttk.Button(bar, text="⬇ Install Selected", command=self._install_checked)
@@ -650,7 +651,8 @@ class WingetApp:
         ttk.Label(bar, text="Search:").pack(side=tk.LEFT)
         self.inst_search = tk.StringVar()
         self.inst_search.trace_add("write", lambda *_: self._filter_installed())
-        ttk.Entry(bar, textvariable=self.inst_search, width=40).pack(side=tk.LEFT, padx=(4, 12))
+        self.inst_search_entry = ttk.Entry(bar, textvariable=self.inst_search, width=40)
+        self.inst_search_entry.pack(side=tk.LEFT, padx=(4, 12))
         self.inst_refresh_btn = ttk.Button(bar, text="↻ Refresh", command=self._load_installed)
         self.inst_refresh_btn.pack(side=tk.LEFT, padx=4)
         self.uninstall_btn = ttk.Button(bar, text="✕ Uninstall Selected", command=self._uninstall_checked)
@@ -1096,7 +1098,8 @@ class ChocoApp:
         ttk.Label(bar, text="Search:").pack(side=tk.LEFT)
         self.browse_search = tk.StringVar()
         self.browse_search.trace_add("write", lambda *_: self._filter_browse())
-        ttk.Entry(bar, textvariable=self.browse_search, width=40).pack(side=tk.LEFT, padx=(4, 12))
+        self.browse_search_entry = ttk.Entry(bar, textvariable=self.browse_search, width=40)
+        self.browse_search_entry.pack(side=tk.LEFT, padx=(4, 12))
         self.browse_refresh_btn = ttk.Button(bar, text="↻ Refresh", command=self._load_browse)
         self.browse_refresh_btn.pack(side=tk.LEFT, padx=4)
         self.browse_install_btn = ttk.Button(bar, text="⬇ Install Selected", command=self._install_checked)
@@ -1227,7 +1230,8 @@ class ChocoApp:
         ttk.Label(bar, text="Search:").pack(side=tk.LEFT)
         self.inst_search = tk.StringVar()
         self.inst_search.trace_add("write", lambda *_: self._filter_installed())
-        ttk.Entry(bar, textvariable=self.inst_search, width=40).pack(side=tk.LEFT, padx=(4, 12))
+        self.inst_search_entry = ttk.Entry(bar, textvariable=self.inst_search, width=40)
+        self.inst_search_entry.pack(side=tk.LEFT, padx=(4, 12))
         self.inst_refresh_btn = ttk.Button(bar, text="↻ Refresh", command=self._load_installed)
         self.inst_refresh_btn.pack(side=tk.LEFT, padx=4)
         self.uninstall_btn = ttk.Button(bar, text="✕ Uninstall Selected", command=self._uninstall_checked)
@@ -1781,6 +1785,43 @@ def build_about_tab(notebook):
 # ──────────────────────────────────────────────────────────────────────
 # Main
 # ──────────────────────────────────────────────────────────────────────
+class KeyboardShortcuts:
+    """Route window shortcuts to the selected package manager and tab."""
+
+    def __init__(self, root, manager_notebook, managers):
+        self.manager_notebook = manager_notebook
+        self.managers = managers
+        root.bind("<Control-f>", self.focus_search, add="+")
+        root.bind("<Control-F>", self.focus_search, add="+")
+        root.bind("<F5>", self.refresh, add="+")
+
+    def focus_search(self, _event=None):
+        app = self.managers.get(self.manager_notebook.select())
+        if app is None:
+            return
+        index = app.notebook.index("current")
+        if index not in (0, 1):
+            return
+        entry = (app.browse_search_entry, app.inst_search_entry)[index]
+        entry.focus_set()
+        entry.selection_range(0, tk.END)
+        entry.icursor(tk.END)
+        return "break"
+
+    def refresh(self, _event=None):
+        app = self.managers.get(self.manager_notebook.select())
+        if app is None:
+            return
+        index = app.notebook.index("current")
+        buttons = (app.browse_refresh_btn, app.inst_refresh_btn,
+                   app.upd_refresh_btn, app.src_refresh_btn)
+        if index >= len(buttons):
+            return
+        # invoke respects the disabled state while a request is running.
+        buttons[index].invoke()
+        return "break"
+
+
 def main():
     root = tk.Tk()
     root.title(f"{APP_NAME} — Windows Package Manager  |  {APP_COMPANY}")
@@ -1838,14 +1879,19 @@ def main():
 
     winget_frame = ttk.Frame(manager_nb)
     manager_nb.add(winget_frame, text="     Winget     ")
-    WingetApp(winget_frame)
+    winget_app = WingetApp(winget_frame)
 
     choco_frame = ttk.Frame(manager_nb)
     manager_nb.add(choco_frame, text="   Chocolatey   ")
-    ChocoApp(choco_frame)
+    choco_app = ChocoApp(choco_frame)
 
     build_setup_tab(manager_nb)
     build_about_tab(manager_nb)
+
+    KeyboardShortcuts(root, manager_nb, {
+        str(winget_frame): winget_app,
+        str(choco_frame): choco_app,
+    })
 
     root.mainloop()
 
